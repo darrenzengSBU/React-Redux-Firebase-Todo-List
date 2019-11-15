@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
+import { changeNameOwner } from '../../store/actions/actionCreators';
 
 class ListScreen extends Component {
     state = {
@@ -17,7 +18,9 @@ class ListScreen extends Component {
         this.setState(state => ({
             ...state,
             [target.id]: target.value,
-        }));
+        }), () => {
+            this.props.changeNameOwner(this.props.todoList.id, this.state)
+        })
     }
 
     render() {
@@ -35,11 +38,11 @@ class ListScreen extends Component {
                 <h5 className="grey-text text-darken-3">Todo List</h5>
                 <div className="input-field">
                     <label htmlFor="email">Name</label>
-                    <input className="active" type="text" name="name" id="name" onChange={this.handleChange} value={todoList.name} />
+                    <input className="active" type="text" name="name" id="name" onChange={this.handleChange} defaultValue={todoList.name} />
                 </div>
                 <div className="input-field">
                     <label htmlFor="password">Owner</label>
-                    <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} value={todoList.owner} />
+                    <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} defaultValue={todoList.owner} />
                 </div>
                 <ItemsList todoList={todoList} />
             </div>
@@ -60,8 +63,14 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        changeNameOwner: (listId, state) => dispatch(changeNameOwner(listId, state))
+    }
+}
+
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect([
         { collection: 'todoLists' },
     ]),

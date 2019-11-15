@@ -7,7 +7,9 @@ import TodoListCard from './TodoListCard';
 class TodoListLinks extends React.Component {
     render() {
         const todoLists = this.props.todoLists;
-        console.log(todoLists);
+        // if (todoLists)
+        //     sortByDate(todoLists)
+        // console.log(todoLists);
         return (
             <div className="todo-lists section">
                 {todoLists && todoLists.map(todoList => (
@@ -18,6 +20,18 @@ class TodoListLinks extends React.Component {
             </div>
         );
     }
+}
+
+function sortByDate(todoLists) {
+    todoLists.sort(function (a, b) {
+        var listA = a.createdAt, listB = b.createdAt;
+        console.log ('hi',listA);
+        if (listA < listB)
+            return -1;
+        if (listA > listB)
+            return 1
+        return 0;
+    })
 }
 
 const mapStateToProps = (state) => {

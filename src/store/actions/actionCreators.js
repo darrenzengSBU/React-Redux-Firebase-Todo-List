@@ -17,7 +17,7 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export function registerSuccess() {
     return { type: 'REGISTER_SUCCESS' }
 };
-export function registerError(error) { 
+export function registerError(error) {
     return { type: 'REGISTER_ERROR', error }
 };
 export function loginSuccess() {
@@ -31,15 +31,39 @@ export function logoutSuccess() {
 };
 
 // THESE CREATORS MAKE ACTIONS FOR ASYNCHRONOUS TODO LIST UPDATES
-export function createTodoList(todoList) {
-    return {
-        type: 'CREATE_TODO_LIST',
-        todoList
+// export function createTodoList(todoList) {
+//     //console.log(todoList)
+//     return {
+//         type: 'CREATE_TODO_LIST',
+//         todoList
+//     }
+// }
+
+export const createTodoList = (todoList) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        const firestore = getFirestore();
+        firestore.collection('todoLists').add({
+            items: [],
+            ...todoList,
+            createdAt: new Date()
+        }).then(() => {
+            dispatch({ type: 'CREATE_TODO_LIST', todoList });
+        })
     }
 }
+
 export function createTodoListError(error) {
     return {
         type: 'CREATE_TODO_LIST_ERROR',
         error
+    }
+}
+
+export const changeNameOwner = (listId, state) => {
+    return (dispatch, getState, {getFirebase, getFirestore}) => {
+        console.log(state.name)
+        const firestore = getFirestore();
+        firestore.collection('todoLists').doc(listId).update({name: state.name, owner: state.owner})
+        .then(dispatch({ type: 'CHANGE_NAME', listId, state}))
     }
 }
