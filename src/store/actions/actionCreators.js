@@ -59,11 +59,14 @@ export function createTodoListError(error) {
     }
 }
 
-export const changeNameOwner = (listId, state) => {
+export const changeNameOwner = (listId, state, targetId) => {
     return (dispatch, getState, {getFirebase, getFirestore}) => {
-        console.log(state.name)
+        //console.log(state, targetId)
         const firestore = getFirestore();
-        firestore.collection('todoLists').doc(listId).update({name: state.name, owner: state.owner})
-        .then(dispatch({ type: 'CHANGE_NAME', listId, state}))
+        if( targetId === 'name')
+            firestore.collection('todoLists').doc(listId).update({name: state.name})
+        else 
+            firestore.collection('todoLists').doc(listId).update({owner: state.owner})
+        .then(dispatch({ type: 'CHANGE_NAME_OWNER', listId, state}))
     }
 }

@@ -12,6 +12,7 @@ class ListScreen extends Component {
         owner: '',
     }
 
+
     handleChange = (e) => {
         const { target } = e;
 
@@ -19,12 +20,14 @@ class ListScreen extends Component {
             ...state,
             [target.id]: target.value,
         }), () => {
-            this.props.changeNameOwner(this.props.todoList.id, this.state)
-        })
+            this.props.changeNameOwner(this.props.todoList.id, this.state, target.id)
+        }
+        )
     }
 
     render() {
         const auth = this.props.auth;
+        console.log(this.props)
         const todoList = this.props.todoList;
         if (!auth.uid) {
             return <Redirect to="/" />;
@@ -65,7 +68,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeNameOwner: (listId, state) => dispatch(changeNameOwner(listId, state))
+        changeNameOwner: (listId, state, targetId) => dispatch(changeNameOwner(listId, state, targetId))
     }
 }
 

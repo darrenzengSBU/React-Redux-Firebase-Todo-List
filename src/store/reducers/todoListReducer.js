@@ -11,7 +11,7 @@ const todoListReducer = (state = initState, action) => {
         case 'CREATE_TODO_LIST_ERROR':
             console.log(action.error)
             return state;
-        case 'CHANGE_NAME':
+        case 'CHANGE_NAME_OWNER':
             return state;
         default:
             return state;
