@@ -27,7 +27,7 @@ class ListScreen extends Component {
 
     render() {
         const auth = this.props.auth;
-        console.log(this.props)
+        //console.log(this.props)
         const todoList = this.props.todoList;
         if (!auth.uid) {
             return <Redirect to="/" />;
@@ -39,11 +39,11 @@ class ListScreen extends Component {
         return (
             <div className="container white">
                 <h5 className="grey-text text-darken-3">Todo List</h5>
-                <div className="input-field">
+                <div>
                     <label htmlFor="email">Name</label>
                     <input className="active" type="text" name="name" id="name" onChange={this.handleChange} defaultValue={todoList.name} />
                 </div>
-                <div className="input-field">
+                <div>
                     <label htmlFor="password">Owner</label>
                     <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} defaultValue={todoList.owner} />
                 </div>

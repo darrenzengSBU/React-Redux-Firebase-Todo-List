@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 class ItemCard extends React.Component {
     render() {
         const { item, todoList } = this.props;
-        console.log(this.props)
+        //console.log(this.props)
         return (
             <Link to={'./todoList' + todoList.id + '/' + item.key}>
                 <div className="card z-depth-0 todo-list-link blue lighten-3">
