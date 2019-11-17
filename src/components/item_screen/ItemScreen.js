@@ -5,10 +5,32 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { DatePicker, Checkbox } from 'react-materialize';
+import { modifyItem } from '../../store/actions/actionCreators';
 
 class ItemScreen extends Component {
     componentDidMount() {
-        //console.log(this.state)
+        const id = this.props.match.params.id
+        const key = this.props.match.params.key
+        const { todoLists } = this.props
+        var item
+        var todoListId
+        if (todoLists) {
+            for (let i = 0; i < todoLists.length; i++) {
+                if ('todoList' + todoLists[i].id === id) {
+                    item = todoLists[i].items[key]
+                    todoListId = todoLists[i].id
+                    break;
+                }
+            }
+        }
+        if(item){
+            this.setState({
+                description: item.description,
+                assigned_to: item.assigned_to,
+                due_date: item.due_date,
+                completed: item.completed
+            })
+        }
     }
 
     componentDidUpdate() {
@@ -25,7 +47,10 @@ class ItemScreen extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        console.log('submitted')
+        const id = this.props.match.params.id
+        const key = this.props.match.params.key
+        const { todoLists } = this.props
+        this.props.modifyItem(id, key, todoLists, this.state)
     }
 
     handleChange = (e) => {
@@ -67,7 +92,7 @@ class ItemScreen extends Component {
                     break;
                 }
             }
-            this.state.completed = item.completed
+            //this.state.completed = item.completed
         }
         //console.log(item)
 
@@ -118,8 +143,14 @@ const mapStateToProps = (state) => {
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        modifyItem: (listId, key, todoLists, state) => dispatch(modifyItem(listId, key, todoLists, state))
+    }
+}
+
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect([
         { collection: 'todoLists' }
     ])

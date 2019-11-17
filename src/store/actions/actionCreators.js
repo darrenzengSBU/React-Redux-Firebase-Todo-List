@@ -73,7 +73,23 @@ export const changeNameOwner = (listId, state, targetId) => {
 
 export const modifyItem = (listId, key, todoLists, state) => {
     return (dispatch, getState, {getFirebase, getFirestore}) => {
+        console.log("hi",todoLists)
+        listId = listId.substring(8, listId.length)
         const firestore = getFirestore();
-        firestore.collection('todoLists').doc(listId).update({items: state})
+        var todoList;
+        for (let i=0;i<todoLists.length;i++){
+            if (todoLists[i].id === listId)
+            todoList = todoLists[i]
+        }
+        todoList.items[key].assigned_to = state.assigned_to;
+        todoList.items[key].completed = state.completed;
+        todoList.items[key].description = state.description;
+        //todoList.items[key].due_date = state.due_date;
+        console.log(todoList)
+        for(let i=0; i<todoList.length; i++) {
+            todoLists.items[i].key = i
+        }
+        console.log("hello",todoList.items)
+        firestore.collection('todoLists').doc(listId).update({items: todoList.items})
     }
 }
