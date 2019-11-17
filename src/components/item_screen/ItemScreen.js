@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -34,8 +34,8 @@ class ItemScreen extends Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state)
-        console.log(this.props)
+        // console.log(this.state)
+        // console.log(this.props)
     }
 
     state = {
@@ -51,6 +51,8 @@ class ItemScreen extends Component {
         const key = this.props.match.params.key
         const { todoLists } = this.props
         this.props.modifyItem(id, key, todoLists, this.state)
+        this.props.history.push("/todoList/" + this.props.match.params.id.substring(8,this.props.match.params.id.length))
+        // console.log(this.props)
     }
 
     handleChange = (e) => {
@@ -154,4 +156,4 @@ export default compose(
     firestoreConnect([
         { collection: 'todoLists' }
     ])
-)(ItemScreen)
+)(withRouter(ItemScreen))

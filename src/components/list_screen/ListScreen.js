@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
-import { changeNameOwner } from '../../store/actions/actionCreators';
+import { changeNameOwner, deleteList } from '../../store/actions/actionCreators';
 import { Modal, Button } from 'react-materialize';
 
 class ListScreen extends Component {
@@ -24,6 +24,11 @@ class ListScreen extends Component {
             this.props.changeNameOwner(this.props.todoList.id, this.state, target.id)
         }
         )
+    }
+
+    handleDeleteList = (e) => {
+        this.props.deleteList(this.props.todoList.id)
+        this.props.history.push("/")
     }
 
     render() {
@@ -51,7 +56,7 @@ class ListScreen extends Component {
                             <p>This list will not be retrievable.</p>
                         </div>
                         <div className="grid right-align">
-                            <Button>yes</Button>
+                            <Button onClick={this.handleDeleteList}>yes</Button>
                             <React.Fragment> </React.Fragment>
                             <Button className="modal-close">no</Button>
                         </div>
@@ -100,7 +105,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeNameOwner: (listId, state, targetId) => dispatch(changeNameOwner(listId, state, targetId))
+        changeNameOwner: (listId, state, targetId) => dispatch(changeNameOwner(listId, state, targetId)),
+        deleteList: (listId) => dispatch(deleteList(listId))
     }
 }
 
@@ -109,4 +115,4 @@ export default compose(
     firestoreConnect([
         { collection: 'todoLists' },
     ]),
-)(ListScreen);
+)(withRouter(ListScreen));

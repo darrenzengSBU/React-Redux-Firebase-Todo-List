@@ -13,9 +13,12 @@ const todoListReducer = (state = initState, action) => {
             return state;
         case 'CHANGE_NAME_OWNER':
             return state;
+        case 'MODIFY_ITEM':
+            return state
         default:
             return state;
     }
 };
 
 export default todoListReducer;
+
