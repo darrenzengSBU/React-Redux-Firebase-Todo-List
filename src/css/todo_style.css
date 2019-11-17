@@ -80,7 +80,7 @@ div.banner {
   color: var(--swatch-bright-accent);
 }
 .list_item_header_card {
-  background-color: var(--swatch-accent);
+  background-color: #0000FF
 }
 .list_item_task_header, .list_item_due_date_header, .list_item_status_header {
   font-weight: bold;

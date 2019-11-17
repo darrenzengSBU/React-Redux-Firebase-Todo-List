@@ -13,6 +13,7 @@ class ItemScreen extends Component {
 
     componentDidUpdate() {
         console.log(this.state)
+        console.log(this.props)
     }
 
     state = {
@@ -105,7 +106,7 @@ class ItemScreen extends Component {
         }
 
         return (
-            <div>loading</div>
+            <div>loading...</div>
         )
 
     }

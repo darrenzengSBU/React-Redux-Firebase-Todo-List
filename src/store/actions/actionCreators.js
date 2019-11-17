@@ -70,3 +70,10 @@ export const changeNameOwner = (listId, state, targetId) => {
         .then(dispatch({ type: 'CHANGE_NAME_OWNER', listId, state}))
     }
 }
+
+export const modifyItem = (listId, key, todoLists, state) => {
+    return (dispatch, getState, {getFirebase, getFirestore}) => {
+        const firestore = getFirestore();
+        firestore.collection('todoLists').doc(listId).update({items: state})
+    }
+}
