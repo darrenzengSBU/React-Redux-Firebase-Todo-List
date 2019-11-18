@@ -72,7 +72,7 @@ input[type=password]:not(.browser-default):focus:not([readonly]) + label{
 #list_details_owner_container {}
 #list_owner_prompt {}
 #list_owner_textfield {}
-#list_items_container {}
+#list_items_container {cursor: pointer}
 
 /* LIST SCREEN CLASSES */
 .list_item_card, .list_item_add_card, .list_item_header_card {

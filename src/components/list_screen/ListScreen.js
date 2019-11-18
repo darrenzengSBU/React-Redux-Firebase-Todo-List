@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
-import { changeNameOwner, deleteList } from '../../store/actions/actionCreators';
+import { changeNameOwner, deleteList, sortByTask, sortByDueDate, sortByStatus } from '../../store/actions/actionCreators';
 import { Modal, Button } from 'react-materialize';
 
 class ListScreen extends Component {
     state = {
         name: '',
         owner: '',
+        nextTaskOrder: 'ascending',
+        nextDueDateOrder: 'ascending',
+        nextStatusOrder: 'ascending'
     }
 
 
@@ -29,6 +32,30 @@ class ListScreen extends Component {
     handleDeleteList = (e) => {
         this.props.deleteList(this.props.todoList.id)
         this.props.history.push("/")
+    }
+
+    handleSortByTask = (e) => {
+        this.props.sortByTask(this.props.todoList.id, this.state.nextTaskOrder)
+        if(this.state.nextTaskOrder=='ascending'){
+            this.setState({nextTaskOrder: 'descending'})
+        }
+        else this.setState({nextTaskOrder: 'ascending'})
+    }
+
+    handleSortByDueDate = (e) => {
+        this.props.sortByDueDate(this.props.todoList.id, this.state.nextDueDateOrder)
+        if(this.state.nextDueDateOrder=='ascending'){
+            this.setState({nextDueDateOrder: 'descending'})
+        }
+        else this.setState({nextDueDateOrder: 'ascending'})
+    }
+
+    handleSortByStatus = (e) => {
+        this.props.sortByStatus(this.props.todoList.id, this.state.nextStatusOrder)
+        if(this.state.nextStatusOrder=='ascending'){
+            this.setState({nextStatusOrder: 'descending'})
+        }
+        else this.setState({nextStatusOrder: 'ascending'})
     }
 
     render() {
@@ -71,15 +98,15 @@ class ListScreen extends Component {
                     <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} defaultValue={todoList.owner} />
                 </div>
                 <div style={{left: '45%'}}className="btn-floating material-icons center-align blue lighten-2">add</div>
-                <div className="card z-depth-0 todo-list-link blue darken-8" id="list_items_container">
+                <div className="card z-depth-1 todo-list-link blue darken-8" id="list_items_container">
                     <div className="list_item_header_card"></div>
-                    <div className="list_item_task_header white-text">
+                    <div onClick={this.handleSortByTask} className="list_item_task_header white-text">
                         Task
                         </div>
-                    <div className='list_item_due_date_header white-text'>
+                    <div onClick={this.handleSortByDueDate} className='list_item_due_date_header white-text'>
                         Due Date
                         </div>
-                    <div className='list_item_status_header white-text'>
+                    <div onClick={this.handleSortByStatus} className='list_item_status_header white-text'>
                         Status
                         </div>
                 </div>
@@ -106,7 +133,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         changeNameOwner: (listId, state, targetId) => dispatch(changeNameOwner(listId, state, targetId)),
-        deleteList: (listId) => dispatch(deleteList(listId))
+        deleteList: (listId) => dispatch(deleteList(listId)),
+        sortByTask: (listId, order) => dispatch(sortByTask(listId, order)),
+        sortByDueDate: (listId, order) => dispatch(sortByDueDate(listId, order)),
+        sortByStatus: (listId, order) => dispatch(sortByStatus(listId, order))
     }
 }
 

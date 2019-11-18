@@ -20,6 +20,7 @@ class TodoListLinks extends React.Component {
     }
 }
 
+// useless code lol
 function sortByDate(todoLists) {
     todoLists.sort(function (a, b) {
         var listA = a.createdAt, listB = b.createdAt;

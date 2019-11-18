@@ -140,7 +140,7 @@ export const moveDown = (listId, key) => {
                 items = doc.data().items
             } else (console.log('wow so much time wasted'))
             //console.log(items)
-            if (key < items.length-1) {
+            if (key < items.length - 1) {
                 const element = items[key]
                 items[key] = items[key + 1]
                 items[key + 1] = element
@@ -166,6 +166,129 @@ export const deleteItem = (listId, key) => {
             } else (console.log('wow so much time wasted'))
             //console.log(items)
             items.splice(key, 1)
+            for (let i = 0; i < items.length; i++) {
+                items[i].key = i
+            }
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
+    }
+}
+
+export const sortByTask = (listId, order) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, key)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            if (order === 'ascending') {
+                items.sort(function (a, b) {
+                    var taskA = a.description.toLowerCase(), taskB = b.description.toLowerCase();
+                    if (taskA < taskB)
+                        return -1;
+                    if (taskA > taskB)
+                        return 1
+                    return 0;
+                })
+                for (let i = 0; i < items.length; i++) {
+                    items[i].key = i;
+                }
+            }
+            else {
+                items.sort(function (a, b) {
+                    var taskA = a.description.toLowerCase(), taskB = b.description.toLowerCase();
+                    if (taskA < taskB)
+                        return 1;
+                    if (taskA > taskB)
+                        return -1
+                    return 0;
+                })
+            }
+            for (let i = 0; i < items.length; i++) {
+                items[i].key = i
+            }
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
+    }
+}
+
+export const sortByDueDate = (listId, order) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, order)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            if (order === 'ascending') {
+                items.sort(function (a, b) {
+                    var taskA = a.due_date.toLowerCase(), taskB = b.due_date.toLowerCase();
+                    if (taskA < taskB)
+                        return -1;
+                    if (taskA > taskB)
+                        return 1
+                    return 0;
+                })
+            }
+            else {
+                items.sort(function (a, b) {
+                    var taskA = a.due_date, taskB = b.due_date;
+                    if (taskA < taskB)
+                        return 1;
+                    if (taskA > taskB)
+                        return -1
+                    return 0;
+                })
+            }
+            for (let i = 0; i < items.length; i++) {
+                items[i].key = i
+            }
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
+    }
+}
+
+export const sortByStatus = (listId, order) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, order)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            if (order === 'ascending') {
+                items.sort(function(a,b){
+                  var taskA=a.completed, taskB=b.completed;
+                  if (taskA < taskB)
+                    return -1;
+                  if (taskA > taskB)
+                    return 1
+                  return 0;
+                })
+              }
+              else {
+                items.sort(function(a,b){
+                  var taskA=a.completed, taskB=b.completed;
+                  if (taskA < taskB)
+                    return 1;
+                  if (taskA > taskB)
+                    return -1
+                  return 0;
+                })
+              }
             for (let i = 0; i < items.length; i++) {
                 items[i].key = i
             }

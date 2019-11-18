@@ -79,9 +79,12 @@ div.banner {
 .list_item_add_card:hover {
   color: var(--swatch-bright-accent);
 }
+
+/*
 .list_item_header_card {
-  background-color: #0000FF
+
 }
+*/
 .list_item_task_header, .list_item_due_date_header, .list_item_status_header {
   font-weight: bold;
   font-size: 24pt;
