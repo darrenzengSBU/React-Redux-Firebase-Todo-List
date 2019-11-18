@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "firebase": "^7.3.0",
+    "material-icons-react": "^1.0.4",
     "materialize-css": "^1.0.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",

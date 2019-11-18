@@ -60,45 +60,116 @@ export function createTodoListError(error) {
 }
 
 export const changeNameOwner = (listId, state, targetId) => {
-    return (dispatch, getState, {getFirebase, getFirestore}) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
         //console.log(state, targetId)
         const firestore = getFirestore();
-        if( targetId === 'name')
-            firestore.collection('todoLists').doc(listId).update({name: state.name})
-        else 
-            firestore.collection('todoLists').doc(listId).update({owner: state.owner})
-        .then(dispatch({ type: 'CHANGE_NAME_OWNER', listId, state}))
+        if (targetId === 'name')
+            firestore.collection('todoLists').doc(listId).update({ name: state.name })
+        else
+            firestore.collection('todoLists').doc(listId).update({ owner: state.owner })
+                .then(dispatch({ type: 'CHANGE_NAME_OWNER', listId, state }))
     }
 }
 
 export const modifyItem = (listId, key, todoLists, state) => {
-    return (dispatch, getState, {getFirebase, getFirestore}) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
         //console.log("hi",todoLists)
         listId = listId.substring(8, listId.length)
         const firestore = getFirestore();
         var todoList;
-        for (let i=0;i<todoLists.length;i++){
+        for (let i = 0; i < todoLists.length; i++) {
             if (todoLists[i].id === listId)
-            todoList = todoLists[i]
+                todoList = todoLists[i]
         }
         todoList.items[key].assigned_to = state.assigned_to;
         todoList.items[key].completed = state.completed;
         todoList.items[key].description = state.description;
         //todoList.items[key].due_date = state.due_date;
         //console.log(todoList)
-        for(let i=0; i<todoList.length; i++) {
+        for (let i = 0; i < todoList.length; i++) {
             todoLists.items[i].key = i
         }
         //console.log("hello",todoList.items)
-        firestore.collection('todoLists').doc(listId).update({items: todoList.items})
-        .then(dispatch({ type: 'MODIFY_ITEM', listId, key, todoLists, state}))
+        firestore.collection('todoLists').doc(listId).update({ items: todoList.items })
+            .then(dispatch({ type: 'MODIFY_ITEM', listId, key, todoLists, state }))
     }
 }
 
 export const deleteList = (listId) => {
-    return (dispatch, getState, {getFirebase, getFirestore}) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
         //console.log(listId)
         const firestore = getFirestore();
         firestore.collection('todoLists').doc(listId).delete();
+    }
+}
+
+export const moveUp = (listId, key) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, key)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            if (key >= 1) {
+                const element = items[key]
+                items[key] = items[key - 1]
+                items[key - 1] = element
+                items[key].key = key;
+                items[key - 1].key = key - 1
+            }
+            //console.log(items)
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
+    }
+}
+
+export const moveDown = (listId, key) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, key)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            if (key < items.length-1) {
+                const element = items[key]
+                items[key] = items[key + 1]
+                items[key + 1] = element
+                items[key].key = key;
+                items[key + 1].key = key + 1
+            }
+            //console.log(items)
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
+    }
+}
+
+export const deleteItem = (listId, key) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, key)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            items.splice(key, 1)
+            for (let i = 0; i < items.length; i++) {
+                items[i].key = i
+            }
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
     }
 }

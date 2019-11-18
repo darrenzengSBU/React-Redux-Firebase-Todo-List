@@ -70,7 +70,7 @@ class ListScreen extends Component {
                     <label htmlFor="password">Owner</label>
                     <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} defaultValue={todoList.owner} />
                 </div>
-                <div className="btn-floating material-icons center-align blue lighten-2">add</div>
+                <div style={{left: '45%'}}className="btn-floating material-icons center-align blue lighten-2">add</div>
                 <div className="card z-depth-0 todo-list-link blue darken-8" id="list_items_container">
                     <div className="list_item_header_card"></div>
                     <div className="list_item_task_header white-text">
