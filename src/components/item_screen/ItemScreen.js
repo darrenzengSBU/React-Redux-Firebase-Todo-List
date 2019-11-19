@@ -23,7 +23,7 @@ class ItemScreen extends Component {
                 }
             }
         }
-        if(item){
+        if (item) {
             this.setState({
                 description: item.description,
                 assigned_to: item.assigned_to,
@@ -51,21 +51,35 @@ class ItemScreen extends Component {
         const key = this.props.match.params.key
         const { todoLists } = this.props
         this.props.modifyItem(id, key, todoLists, this.state)
-        this.props.history.push("/todoList/" + this.props.match.params.id.substring(8,this.props.match.params.id.length))
+        this.props.history.push("/todoList/" + this.props.match.params.id.substring(8, this.props.match.params.id.length))
         // console.log(this.props)
     }
 
     handleChange = (e) => {
         this.setState({
-            [e.target.id]:e.target.value
+            [e.target.id]: e.target.value
         })
     }
 
     handleDateChange = (e) => {
         //console.log(e)
         this.setState({
-            due_date: e
+            due_date: this.formatDate(e)
         })
+    }
+
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
     }
 
     handleCompletedChange = (e) => {
@@ -116,7 +130,7 @@ class ItemScreen extends Component {
                             <DatePicker type="date_picker" id='due_date' onChange={this.handleDateChange} defaultValue={item.due_date} />
                         </div>
                         <div>
-                            <label htmlFor="completed">Completed:</label>
+                            <label htmlFor="completed">Toggle status</label>
                             <Checkbox label='' type="checkbox" id='completed' onChange={this.handleCompletedChange} defaultValue={item.completed} />
                         </div>
                         <div className="grid">

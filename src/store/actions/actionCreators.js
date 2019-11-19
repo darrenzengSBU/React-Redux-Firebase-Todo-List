@@ -45,10 +45,11 @@ export const createTodoList = (todoList) => {
         firestore.collection('todoLists').add({
             items: [],
             ...todoList,
-            createdAt: new Date()
-        }).then(() => {
-            dispatch({ type: 'CREATE_TODO_LIST', todoList });
+            timeStamp: new Date()
         })
+            .then(() => {
+                dispatch({ type: 'CREATE_TODO_LIST', todoList });
+            })
     }
 }
 
@@ -56,6 +57,14 @@ export function createTodoListError(error) {
     return {
         type: 'CREATE_TODO_LIST_ERROR',
         error
+    }
+}
+
+export const updateDate = (listId) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId)
+        const firestore = getFirestore();
+        firestore.collection('todoLists').doc(listId).update({ timeStamp: new Date() })
     }
 }
 
@@ -84,7 +93,7 @@ export const modifyItem = (listId, key, todoLists, state) => {
         todoList.items[key].assigned_to = state.assigned_to;
         todoList.items[key].completed = state.completed;
         todoList.items[key].description = state.description;
-        //todoList.items[key].due_date = state.due_date;
+        todoList.items[key].due_date = state.due_date;
         //console.log(todoList)
         for (let i = 0; i < todoList.length; i++) {
             todoLists.items[i].key = i
@@ -92,6 +101,31 @@ export const modifyItem = (listId, key, todoLists, state) => {
         //console.log("hello",todoList.items)
         firestore.collection('todoLists').doc(listId).update({ items: todoList.items })
             .then(dispatch({ type: 'MODIFY_ITEM', listId, key, todoLists, state }))
+    }
+}
+
+export const addItem = (listId, state) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        //console.log(listId, state)
+        const firestore = getFirestore();
+        var items
+        var docRef = firestore.collection('todoLists').doc(listId)
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                //console.log(doc.data().items)
+                items = doc.data().items
+            } else (console.log('wow so much time wasted'))
+            //console.log(items)
+            items[items.length]={
+                assigned_to: "Unknown",
+                completed: false,
+                description: "Unknown",
+                due_date: "Unknown",
+                key: items.length
+            }
+            //console.log(items)
+            firestore.collection('todoLists').doc(listId).update({ items: items })
+        })
     }
 }
 
@@ -270,25 +304,25 @@ export const sortByStatus = (listId, order) => {
             } else (console.log('wow so much time wasted'))
             //console.log(items)
             if (order === 'ascending') {
-                items.sort(function(a,b){
-                  var taskA=a.completed, taskB=b.completed;
-                  if (taskA < taskB)
-                    return -1;
-                  if (taskA > taskB)
-                    return 1
-                  return 0;
+                items.sort(function (a, b) {
+                    var taskA = a.completed, taskB = b.completed;
+                    if (taskA < taskB)
+                        return -1;
+                    if (taskA > taskB)
+                        return 1
+                    return 0;
                 })
-              }
-              else {
-                items.sort(function(a,b){
-                  var taskA=a.completed, taskB=b.completed;
-                  if (taskA < taskB)
-                    return 1;
-                  if (taskA > taskB)
-                    return -1
-                  return 0;
+            }
+            else {
+                items.sort(function (a, b) {
+                    var taskA = a.completed, taskB = b.completed;
+                    if (taskA < taskB)
+                        return 1;
+                    if (taskA > taskB)
+                        return -1
+                    return 0;
                 })
-              }
+            }
             for (let i = 0; i < items.length; i++) {
                 items[i].key = i
             }

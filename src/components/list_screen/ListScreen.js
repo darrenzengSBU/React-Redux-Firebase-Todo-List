@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ItemsList from './ItemsList.js'
 import { firestoreConnect } from 'react-redux-firebase';
-import { changeNameOwner, deleteList, sortByTask, sortByDueDate, sortByStatus } from '../../store/actions/actionCreators';
+import { updateDate, changeNameOwner, addItem, deleteList, sortByTask, sortByDueDate, sortByStatus } from '../../store/actions/actionCreators';
 import { Modal, Button } from 'react-materialize';
 
 class ListScreen extends Component {
@@ -16,6 +16,9 @@ class ListScreen extends Component {
         nextStatusOrder: 'ascending'
     }
 
+    componentDidMount(){
+        this.props.updateDate(this.props.match.params.id)
+    }
 
     handleChange = (e) => {
         const { target } = e;
@@ -27,6 +30,17 @@ class ListScreen extends Component {
             this.props.changeNameOwner(this.props.todoList.id, this.state, target.id)
         }
         )
+    }
+
+    handleAddItem = (e) => {
+        this.props.addItem(this.props.todoList.id, this.state)
+    }
+
+    goNewItem = (e) => {
+        setTimeout(() => {
+            console.log(this.props.todoList)
+            this.props.history.push("/todoList/todoList" + this.props.todoList.id + '/' + this.props.todoList.items.length-1)
+        }, 3000);
     }
 
     handleDeleteList = (e) => {
@@ -97,7 +111,6 @@ class ListScreen extends Component {
                     <label htmlFor="password">Owner</label>
                     <input className="active" type="text" name="owner" id="owner" onChange={this.handleChange} defaultValue={todoList.owner} />
                 </div>
-                <div style={{left: '45%'}}className="btn-floating material-icons center-align blue lighten-2">add</div>
                 <div className="card z-depth-1 todo-list-link blue darken-8" id="list_items_container">
                     <div className="list_item_header_card"></div>
                     <div onClick={this.handleSortByTask} className="list_item_task_header white-text">
@@ -110,8 +123,8 @@ class ListScreen extends Component {
                         Status
                         </div>
                 </div>
-
                 <ItemsList todoList={todoList} />
+                <div onClick={this.handleAddItem} style={{left: '45%'}}className="btn-floating material-icons center-align blue lighten-2">add</div>
             </div>
         );
     }
@@ -132,7 +145,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        updateDate: (listId) => dispatch(updateDate(listId)),
         changeNameOwner: (listId, state, targetId) => dispatch(changeNameOwner(listId, state, targetId)),
+        addItem: (listId, state) => dispatch(addItem(listId, state)),
         deleteList: (listId) => dispatch(deleteList(listId)),
         sortByTask: (listId, order) => dispatch(sortByTask(listId, order)),
         sortByDueDate: (listId, order) => dispatch(sortByDueDate(listId, order)),

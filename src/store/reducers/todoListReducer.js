@@ -6,7 +6,7 @@ const todoListReducer = (state = initState, action) => {
     switch (action.type) {
         /* IF YOU HAVE ANY TODO LIST EDITING REDUCERS ADD THEM HERE */
         case 'CREATE_TODO_LIST':
-            //console.log('created todo list', action.todoList);
+            console.log('created todo list', action);
             return state; 
         case 'CREATE_TODO_LIST_ERROR':
             console.log(action.error)
